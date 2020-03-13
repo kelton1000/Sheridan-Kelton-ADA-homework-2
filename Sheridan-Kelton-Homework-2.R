@@ -5,11 +5,16 @@ library(dplyr)
 library(ggplot2)
 library(radiant)
 library(mosaic)
+
+#Use a one-line statement to filter the dataset to include just movies 
+#from 1920 to 1979 and movies that are less than 4 hours long (runtimeMinutes < 240), 
+#and add a new column that codes the startYear into a new variable, decade 
+#(“20s”, “30s”, …“70s”). If you do this correctly, 
+#there should be 5741 movies remaining in the dataset.
 f <- "https://raw.githubusercontent.com/difiore/ADA-datasets/master/IMDB-movies.csv"
 d <- read_csv(f, col_names = TRUE)
 s <- select(d, startYear, runtimeMinutes)
 head(s)
-
 x <- filter(s, startYear %in% 1920:1979 & runtimeMinutes < 240) %>%
   mutate("decade" = case_when(startYear %in% 1920:1929 ~ "20s", 
                                      startYear %in% 1930:1939 ~ "30s",
@@ -19,18 +24,15 @@ x <- filter(s, startYear %in% 1920:1979 & runtimeMinutes < 240) %>%
                                      startYear %in% 1970:1979 ~ "70s"))
 View(x)
 nrow(x)
-## need to do ggplot
-
-#Use a one-line statement to calculate the population mean and population standard 
-#deviation in runtimeMinutes for each decade and save the results in a new dataframe, results.
-
-
+#Use {ggplot2} to plot histograms of the distribution of runtimeMinutes for each decade.
 mean(runtimeMinutes)
 mean(~mean, data = samp_dist_mean) # mean based on mean of sampling distribution
 p <- ggplot(x, aes(x = runtimeMinutes)) + geom_histogram()
 p
 p <- p + facet_wrap(~decade, ncol = 3)
 p
+#Use a one-line statement to calculate the population mean and population standard 
+#deviation in runtimeMinutes for each decade and save the results in a new dataframe, results.
 
 x <- group_by(x, decade)
 x
@@ -50,9 +52,6 @@ mean(x)
 sample_se <- sample_sd / sqrt(n) # a vector of SEs estimated from each sample
 pop_se <- sigma / (sqrt(n)) # a single value estimated from the population SD
 sampling_dist_se <- sd(m) # a single value calculated from our sampling distibution SD
-
-
-
 
 
 #Challenge 2
